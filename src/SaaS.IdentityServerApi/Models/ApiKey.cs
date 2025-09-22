@@ -1,13 +1,12 @@
 namespace SaaS.IdentityServerApi.Models;
 
-// Remove 'required' keyword for compatibility with older C# versions
 public class ApiKey
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string PublicId { get; set; }               // Short ID (tenant unique)
-    public string Hash { get; set; }                   // Hash of (publicId:secret)
-    public string OwnerUserId { get; set; }            // Owning user (sub)
-    public string TenantId { get; set; }               // Tenant
+    public string PublicId { get; set; }              
+    public string Hash { get; set; }                   
+    public string OwnerUserId { get; set; }            
+    public string TenantId { get; set; }        
     public string ScopesCsv { get; set; } = "api1";
     public string? Name { get; set; }
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;

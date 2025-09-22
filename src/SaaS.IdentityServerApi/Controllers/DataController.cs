@@ -10,7 +10,7 @@ namespace SaaS.IdentityServerApi.Controllers;
 public class DataController : ControllerBase
 {
     [HttpGet]
-    [Authorize(Policy = "ApiAccess")] // Uses the policy that accepts both schemes
+    [Authorize] // Uses the policy that accepts both schemes
     public IActionResult Get()
     {
         return Ok(new

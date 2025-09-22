@@ -5,7 +5,6 @@ using System.Security.Claims;
 
 namespace SaaS.IdentityServerApi.Identity;
 
-// Implements grant_type=api_key
 public class ApiKeyGrantValidator : IExtensionGrantValidator
 {
     private readonly ApiKeyService _apiKeyService;
