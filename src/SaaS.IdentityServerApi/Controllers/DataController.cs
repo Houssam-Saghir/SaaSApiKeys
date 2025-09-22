@@ -10,9 +10,7 @@ namespace SaaS.IdentityServerApi.Controllers;
 public class DataController : ControllerBase
 {
     [HttpGet]
-    //[Authorize(Policy = "ApiScope")]
-    //[Authorize(AuthenticationSchemes = ApiKeyAuthenticationSchemeOptions.DefaultScheme)]
-    [Authorize]
+    [Authorize(Policy = "ApiAccess")] // Uses the policy that accepts both schemes
     public IActionResult Get()
     {
         return Ok(new
@@ -22,7 +20,9 @@ public class DataController : ControllerBase
             tenant = User.FindFirstValue("tenant_id"),
             owner = User.FindFirstValue("owner_sub"),
             scopes = User.Claims.Where(c => c.Type == "scope").Select(c => c.Value).ToArray(),
-            issuedVia = User.FindFirstValue("auth_origin") ?? "unknown"
+            issuedVia = User.FindFirstValue("auth_origin") ?? "unknown",
+            authenticationType = User.Identity?.AuthenticationType,
+            authenticationScheme = HttpContext.User.Identity?.AuthenticationType
         });
     }
 }

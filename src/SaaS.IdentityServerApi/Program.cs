@@ -37,12 +37,12 @@ builder.Services.AddIdentityServer(options =>
 .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
 .AddExtensionGrantValidator<ApiKeyGrantValidator>();
 
-// Single authentication configuration
+// Configure multiple authentication schemes
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    // Don't set a default scheme - let policies decide
+    options.DefaultAuthenticateScheme = null;
+    options.DefaultChallengeScheme = null;
 })
 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
 {
@@ -58,8 +58,19 @@ builder.Services.AddAuthentication(options =>
     SaaS.IdentityServerApi.Authentication.ApiKeyAuthenticationSchemeOptions.DefaultScheme, 
     options => { });
 
+// Configure authorization policies that support both schemes
 builder.Services.AddAuthorization(opts =>
 {
+    // Policy that accepts EITHER JWT Bearer OR API Key authentication
+    opts.AddPolicy("ApiAccess", policy =>
+    {
+        policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+        policy.AuthenticationSchemes.Add(SaaS.IdentityServerApi.Authentication.ApiKeyAuthenticationSchemeOptions.DefaultScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "api1"); // Both schemes should provide this claim
+    });
+    
+    // Keep the original policy for backward compatibility
     opts.AddPolicy("ApiScope", policy =>
     {
         policy.RequireClaim("scope", "api1");
