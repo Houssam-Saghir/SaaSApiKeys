@@ -16,7 +16,7 @@ public class Program
         if (string.IsNullOrEmpty(authorizationHeader))
             return JwtBearerDefaults.AuthenticationScheme;
 
-        if (authorizationHeader.StartsWith("ApiKey ", StringComparison.OrdinalIgnoreCase))
+        if (authorizationHeader.StartsWith("ak_", StringComparison.OrdinalIgnoreCase))
             return SaaS.IdentityServerApi.Authentication.ApiKeyAuthenticationSchemeOptions.DefaultScheme;
 
         if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
@@ -84,14 +84,6 @@ public class Program
             };
         });
 
-        builder.Services.AddAuthorization(opts =>
-        {
-            opts.AddPolicy("ApiScope", policy =>
-            {
-                policy.RequireClaim("scope", "api1");
-            });
-        });
-
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -113,14 +105,6 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-
-        app.MapGet("/", () => new
-        {
-            message = "SaaS IdentityServer4 + API Key Extension Grant demo",
-            tokenEndpoint = "/connect/token",
-            apiKeysEndpoint = "/api/apikeys",
-            protectedEndpoint = "/api/data"
-        });
 
         app.Run();
     }

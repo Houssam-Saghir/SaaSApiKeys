@@ -57,9 +57,9 @@ public class ApiKeyService
 
     public async Task<ApiKey?> ValidateAsync(string fullKey, bool updateLastUsed = true)
     {
-        if (!fullKey.StartsWith("ak_")) return null;
-        var trimmed = fullKey.Substring(3);
-        var parts = trimmed.Split('.', 2);
+        //if (!fullKey.StartsWith("ak_")) return null;
+        //var trimmed = fullKey.Substring(3);
+        var parts = fullKey.Split('.', 2);
         if (parts.Length != 2) return null;
         var publicId = parts[0];
         string secretPart;

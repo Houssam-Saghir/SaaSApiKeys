@@ -28,16 +28,18 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
             return AuthenticateResult.NoResult();
 
         var authHeader = Request.Headers["Authorization"].ToString();
-        if (!authHeader.StartsWith("ApiKey ", StringComparison.OrdinalIgnoreCase))
+        if (!authHeader.StartsWith("ak_", StringComparison.OrdinalIgnoreCase))
             return AuthenticateResult.NoResult();
 
-        var apiKey = authHeader.Substring("ApiKey ".Length).Trim();
+        var apiKey = authHeader.Substring("ak_".Length).Trim();
         if (string.IsNullOrEmpty(apiKey))
             return AuthenticateResult.Fail("Invalid API key format");
 
         try
         {
+            //var validatedKey = await _apiKeyService.ValidateAsync(apiKey, updateLastUsed: true);
             var validatedKey = await _apiKeyService.ValidateAsync(apiKey, updateLastUsed: true);
+
             if (validatedKey == null)
                 return AuthenticateResult.Fail("Invalid API key");
 

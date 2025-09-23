@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaaS.IdentityServerApi.Services;
 
@@ -27,6 +28,7 @@ public class ApiKeysController : ControllerBase
     public record CreateKeyRequest(string? Name, string? Scopes, int? TtlMinutes, string? MetadataJson);
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateKeyRequest req)
     {
         var (userId, tenantId) = ResolveContext();
